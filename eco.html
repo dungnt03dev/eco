@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#17130f" />
+  <title>11 người • Một hành trình</title>
+  <meta name="description" content="Một lá thư gửi đến những người đã đi cùng nhau một đoạn đường." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #17130f;
+      --bg-soft: #211a14;
+      --paper: #f5ead7;
+      --paper-2: #ead9bc;
+      --ink: #3b2b20;
+      --muted: #9b8878;
+      --accent: #b78757;
+      --accent-soft: #d7b48d;
+      --white: #fffaf2;
+      --shadow: 0 24px 70px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(183,135,87,.16), transparent 34%),
+        radial-gradient(circle at 90% 20%, rgba(183,135,87,.08), transparent 28%),
+        linear-gradient(180deg, #15110e 0%, #1b1511 45%, #12100e 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .19;
+      z-index: 30;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .shell { width: min(1100px, calc(100% - 32px)); margin: 0 auto; }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 48px 0 72px;
+      position: relative;
+    }
+
+    .hero-inner { width: 100%; text-align: center; }
+    .eyebrow { letter-spacing: .24em; text-transform: uppercase; font-size: 12px; color: var(--accent-soft); margin-bottom: 18px; }
+    h1 {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(48px, 9vw, 104px);
+      line-height: .98;
+      font-weight: 600;
+      letter-spacing: -.04em;
+    }
+    .hero-sub { margin: 22px auto 34px; max-width: 650px; color: #cdbdab; font-size: clamp(15px, 2vw, 19px); line-height: 1.8; }
+
+    .photo-strip {
+      margin: 42px auto 30px;
+      display: grid;
+      grid-template-columns: 1.25fr .85fr .85fr;
+      gap: 14px;
+      max-width: 920px;
+      transform: rotate(-.4deg);
+    }
+    .photo {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      min-height: 250px;
+      background: linear-gradient(135deg, #836c59, #3d3027);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .photo:nth-child(2) { transform: translateY(24px) rotate(2deg); }
+    .photo:nth-child(3) { transform: translateY(8px) rotate(-2deg); }
+    .photo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, transparent 45%, rgba(0,0,0,.45)),
+        radial-gradient(circle at 35% 35%, rgba(245,234,215,.27), transparent 25%),
+        linear-gradient(135deg, #6e5d50, #2a221d);
+      transition: transform 1.4s ease;
+    }
+    .photo:hover::before { transform: scale(1.05); }
+    .photo span {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #f4e7d3;
+      z-index: 2;
+      opacity: .86;
+    }
+    .photo::after {
+      content: 'Ảnh nhóm';
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      color: rgba(255,255,255,.35);
+      z-index: 1;
+    }
+
+    .scroll-hint { margin-top: 44px; color: #a89687; font-size: 13px; }
+    .scroll-line { width: 1px; height: 54px; background: linear-gradient(var(--accent-soft), transparent); margin: 14px auto 0; }
+
+    .letter-section { padding: 60px 0 120px; }
+    .envelope-wrap { display: grid; place-items: center; margin-bottom: 44px; }
+    .envelope {
+      width: min(460px, 92vw);
+      aspect-ratio: 1.55;
+      position: relative;
+      cursor: pointer;
+      perspective: 1200px;
+      filter: drop-shadow(0 30px 55px rgba(0,0,0,.28));
+      user-select: none;
+    }
+    .env-back, .env-front, .env-flap {
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+    }
+    .env-back { background: #d8b488; }
+    .env-front {
+      background: linear-gradient(145deg, #cfa274, #b9865a);
+      clip-path: polygon(0 34%, 50% 72%, 100% 34%, 100% 100%, 0 100%);
+      z-index: 3;
+    }
+    .env-flap {
+      background: linear-gradient(145deg, #e3c49c, #c99a6d);
+      clip-path: polygon(0 0, 100% 0, 50% 68%);
+      transform-origin: top;
+      transition: transform .9s cubic-bezier(.2,.7,.2,1), z-index .2s .45s;
+      z-index: 4;
+    }
+    .seal {
+      width: 54px; height: 54px; border-radius: 50%;
+      position: absolute; left: 50%; top: 46%; transform: translate(-50%,-50%);
+      background: radial-gradient(circle at 35% 30%, #b75f55, #7e3933 70%);
+      display: grid; place-items: center;
+      z-index: 5; box-shadow: 0 5px 18px rgba(0,0,0,.25);
+      transition: opacity .35s ease, transform .35s ease;
+      font-size: 22px;
+    }
+    .letter-peek {
+      position: absolute;
+      left: 7%; right: 7%; bottom: 6%; height: 78%;
+      background: var(--paper);
+      border-radius: 8px;
+      transform: translateY(2%);
+      transition: transform 1s cubic-bezier(.2,.8,.2,1) .25s;
+      z-index: 2;
+    }
+    .envelope.open .env-flap { transform: rotateX(180deg); z-index: 1; }
+    .envelope.open .letter-peek { transform: translateY(-52%); }
+    .envelope.open .seal { opacity: 0; transform: translate(-50%,-50%) scale(.5); }
+    .open-label { margin-top: 18px; text-align: center; color: #c8b6a6; font-size: 14px; }
+
+    .letter-content { display: none; }
+    .letter-content.unlocked { display: block; animation: letterAppear .7s ease both; }
+    @keyframes letterAppear {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .paper {
+      width: min(790px, 100%);
+      margin: 0 auto;
+      background: linear-gradient(180deg, var(--paper), #efe0c6);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: clamp(30px, 5vw, 66px);
+      box-shadow: 0 30px 80px rgba(0,0,0,.32);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(81,52,31,.08);
+    }
+    .paper::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(96,62,35,.035) 1px, transparent 1px);
+      background-size: 100% 31px;
+      pointer-events: none;
+    }
+    .paper > * { position: relative; z-index: 1; }
+    .paper-kicker { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #9e7956; }
+    .paper h2 { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5vw, 56px); margin: 10px 0 28px; font-weight: 600; }
+    .paper p { font-size: clamp(16px, 2vw, 18px); line-height: 1.95; margin: 0 0 26px; }
+    .highlight {
+      margin: 36px 0;
+      padding: 24px 26px;
+      border-left: 3px solid #aa7d55;
+      background: rgba(170,125,85,.08);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    .invite-card {
+      margin: 42px 0 30px;
+      padding: 28px;
+      border: 1px solid rgba(110,74,46,.18);
+      border-radius: 18px;
+      background: rgba(255,255,255,.28);
+      text-align: center;
+    }
+    .invite-card .date { font-family: 'Playfair Display', serif; font-size: clamp(42px, 7vw, 72px); letter-spacing: -.04em; }
+    .invite-card .time { margin-top: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: #8c6748; }
+    .invite-card .desc { margin-top: 14px; font-size: 16px; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .75s ease, transform .75s ease; }
+    .reveal.show { opacity: 1; transform: none; }
+
+    .cta-section { padding: 0 0 120px; text-align: center; }
+    .cta-card { width: min(760px, 100%); margin: 0 auto; padding: 46px 28px; border: 1px solid rgba(255,255,255,.08); border-radius: 26px; background: rgba(255,255,255,.035); backdrop-filter: blur(10px); }
+    .cta-card h3 { font-family: 'Playfair Display', serif; font-size: clamp(34px, 5vw, 54px); margin: 0 0 10px; }
+    .cta-card p { color: #bfae9f; margin: 0 0 26px; }
+    .choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .choice {
+      appearance: none; border: 1px solid rgba(255,255,255,.1); background: #2a211b; color: #fff6ea;
+      padding: 14px 18px; border-radius: 999px; cursor: pointer; font: inherit; font-weight: 600;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .choice:hover { transform: translateY(-2px); background: #352920; border-color: rgba(215,180,141,.38); }
+    .thanks { min-height: 28px; margin-top: 20px; color: var(--accent-soft); font-family: 'Playfair Display', serif; font-size: 21px; }
+    .footer { text-align: center; color: #7f7268; font-size: 12px; padding: 0 0 34px; }
+
+    .confetti { position: fixed; width: 8px; height: 12px; top: -20px; border-radius: 2px; pointer-events: none; z-index: 99; animation: fall 2.6s linear forwards; }
+    @keyframes fall { to { transform: translate3d(var(--drift), 110vh, 0) rotate(720deg); opacity: 0; } }
+
+    @media (max-width: 720px) {
+      .hero { min-height: auto; padding-top: 72px; }
+      .photo-strip { grid-template-columns: 1fr 1fr; }
+      .photo:first-child { grid-column: 1 / -1; min-height: 290px; }
+      .photo { min-height: 185px; }
+      .photo:nth-child(2), .photo:nth-child(3) { transform: none; }
+      .paper { border-radius: 0; width: calc(100% + 32px); margin-left: -16px; }
+      .choices { flex-direction: column; }
+      .choice { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="shell hero-inner">
+        <div class="eyebrow">Gửi đến những người đã đi cùng nhau một đoạn đường</div>
+        <h1>11 người<br>một hành trình.</h1>
+        <p class="hero-sub">Có những mối quan hệ không cần lúc nào cũng ở cạnh nhau, chỉ cần đến lúc quay lại vẫn nhận ra: à, tụi mình vẫn là tụi mình.</p>
+
+        <div class="photo-strip" aria-label="Ảnh nhóm mẫu">
+          <div class="photo"><span>Khoảnh khắc 01</span></div>
+          <div class="photo"><span>Khoảnh khắc 02</span></div>
+          <div class="photo"><span>Khoảnh khắc 03</span></div>
+        </div>
+
+        <div class="scroll-hint">Cuộn xuống để mở thư<div class="scroll-line"></div></div>
+      </div>
+    </section>
+
+    <section class="letter-section" id="letter">
+      <div class="shell">
+        <div class="envelope-wrap reveal">
+          <div>
+            <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Mở thư">
+              <div class="env-back"></div>
+              <div class="letter-peek"></div>
+              <div class="env-flap"></div>
+              <div class="env-front"></div>
+              <div class="seal">11</div>
+            </div>
+            <div class="open-label" id="openLabel">Nhấn vào phong thư để mở</div>
+          </div>
+        </div>
+
+        <div class="letter-content" id="letterContent">
+        <article class="paper" id="paper">
+          <div class="paper-kicker reveal">Một lá thư cho anh em</div>
+          <h2 class="reveal">Chào các bạn,</h2>
+
+          <p class="reveal">Thực sự lâu lắm rồi nhóm 11 người mình mới lại có dịp ngồi lại ngẫm nghĩ một chút. Đi cùng nhau cả một đoạn đường dài từ những ngày tụi mình còn ngây ngơ, tay trắng chưa có gì trong tay, suy nghĩ lẫn kinh tế đều chưa chín chắn... Tính ra tụi mình đã gắn bó với nhau lâu phết rồi đấy chứ.</p>
+
+          <p class="reveal">Thời gian qua có vài chuyện xích mích không hay xảy ra, nhưng tôi nghĩ cái gì thuộc về quá khứ và không còn ảnh hưởng đến hiện tại nữa thì mình chủ động buông xuống thôi. Giữ lại những kỷ niệm đẹp để làm cái đệm cho mối quan hệ này, chứ bỏ đi thì phí lắm.</p>
+
+          <div class="highlight reveal">“Nhóm mình chẳng ai muốn thấy người kia đi xuống cả.”</div>
+
+          <p class="reveal">Bây giờ ai cũng có công việc, áp lực riêng rồi. Nhưng từ trước đến giờ tôi luôn tin một điều: nhóm mình chẳng ai muốn thấy người kia đi xuống cả. Ai cũng mong bạn mình thành đạt, giỏi giang để sau này còn dựa dẫm, hưởng ké của nhau. Ngoài kia xã hội mệt mỏi thế nào không biết, nhưng quay về vẫn có mấy đứa bạn sẵn sàng ngồi lại chia sẻ, tấu hài thì nó vẫn là cái gì đó rất khác.</p>
+
+          <p class="reveal">Hồi xưa mình có nhiều dự định chưa làm được, nhiều nơi chưa đi được vì chưa đủ điều kiện, chưa đủ trải nghiệm. Giờ là lúc tụi mình cùng nhau đi tiếp, hoàn thành nốt những hành trình đó, không chỉ bây giờ mà còn đến mãi sau này nữa.</p>
+
+          <div class="highlight reveal">“Giờ là lúc tụi mình cùng nhau đi tiếp.”</div>
+
+          <p class="reveal">Sắp tới nghỉ lễ 2/9, tôi và anh em muốn rủ cả nhóm mình ngồi lại làm bữa nhậu/ăn uống thân mật vào <strong>trưa ngày 01/09/2026</strong>. Coi như cơ hội để anh em gạt bỏ hết khoảng cách, làm lại từ đầu.</p>
+
+          <div class="invite-card reveal">
+            <div class="date">01.09.2026</div>
+            <div class="time">Buổi trưa</div>
+            <div class="desc">Một bữa ăn / nhậu thân mật của anh em 🍻</div>
+          </div>
+
+          <p class="reveal">Mọi người đi được thì cho tôi xin một cái thả tim hoặc giơ tay ở nhóm nhé!</p>
+        </article>
+      </div>
+      </div>
+    </section>
+
+    <section class="cta-section letter-content" id="ctaSection">
+      <div class="shell">
+        <div class="cta-card reveal">
+          <h3>Bạn có mặt chứ?</h3>
+          <p>Chọn một câu thôi, còn lại gặp nhau nói tiếp.</p>
+          <div class="choices">
+            <button class="choice">❤️ Có, chắc chắn rồi</button>
+            <button class="choice">🙋 Tôi tham gia</button>
+            <button class="choice">🍻 Lên luôn anh em</button>
+          </div>
+          <div class="thanks" id="thanks"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">11 người • một hành trình • 01.09.2026</div>
+
+  <script>
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    const envelope = document.getElementById('envelope');
+    const openLabel = document.getElementById('openLabel');
+    const paper = document.getElementById('paper');
+    const letterContent = document.getElementById('letterContent');
+    const ctaSection = document.getElementById('ctaSection');
+    let isOpened = false;
+
+    function openEnvelope() {
+      if (isOpened) return;
+      isOpened = true;
+      envelope.classList.add('open');
+      openLabel.textContent = 'Thư đã mở — kéo xuống để đọc';
+
+      setTimeout(() => {
+        letterContent.classList.add('unlocked');
+        ctaSection.classList.add('unlocked');
+        requestAnimationFrame(() => {
+          paper.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+          ctaSection.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        });
+        paper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 650);
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openEnvelope();
+      }
+    });
+
+    function burstConfetti() {
+      const colors = ['#d7b48d', '#f5ead7', '#b78757', '#d98278'];
+      for (let i = 0; i < 38; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.setProperty('--drift', (Math.random() * 220 - 110) + 'px');
+        el.style.animationDelay = (Math.random() * .5) + 's';
+        el.style.transform = `rotate(${Math.random() * 180}deg)`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3200);
+      }
+    }
+
+    document.querySelectorAll('.choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('thanks').textContent = 'Vậy hẹn gặp nhau ngày 01/09 nhé ❤️';
+        burstConfetti();
+      });
+    });
+  </script>
+</body>
+</html>
