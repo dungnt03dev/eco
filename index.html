@@ -107,21 +107,38 @@
       }
 
       .photo-strip {
-        margin: 42px auto 30px;
+        margin: 52px auto 38px;
         display: grid;
         grid-template-columns: 1.25fr 0.85fr 0.85fr;
-        gap: 14px;
-        max-width: 920px;
+        gap: 18px;
+        max-width: 1040px;
         transform: rotate(-0.4deg);
       }
       .photo {
         position: relative;
         overflow: hidden;
-        border-radius: 24px;
-        min-height: 250px;
-        background: linear-gradient(135deg, #836c59, #3d3027);
-        box-shadow: var(--shadow);
+        border-radius: 18px;
+        min-height: 320px;
+        background-color: #3d3027;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        box-shadow: 0 22px 52px rgba(0, 0, 0, 0.42);
         border: 1px solid rgba(255, 255, 255, 0.08);
+        transition:
+          filter 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .photo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, transparent 62%, rgba(0, 0, 0, 0.62));
+      }
+      .photo:hover {
+        filter: brightness(1.12) saturate(1.08);
+        box-shadow: 0 28px 62px rgba(0, 0, 0, 0.55);
       }
       .photo:nth-child(2) {
         transform: translateY(24px) rotate(2deg);
@@ -129,7 +146,7 @@
       .photo:nth-child(3) {
         transform: translateY(8px) rotate(-2deg);
       }
-      .photo::before {
+      /* .photo::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -145,7 +162,7 @@
       }
       .photo:hover::before {
         transform: scale(1.05);
-      }
+      } */
       .photo span {
         position: absolute;
         left: 18px;
@@ -331,6 +348,9 @@
         font-size: clamp(16px, 2vw, 18px);
         line-height: 1.95;
         margin: 0 0 26px;
+
+        text-align: justify;
+        text-justify: inter-word;
       }
       .highlight {
         margin: 36px 0;
@@ -470,10 +490,10 @@
         }
         .photo:first-child {
           grid-column: 1 / -1;
-          min-height: 290px;
+          min-height: 330px;
         }
         .photo {
-          min-height: 185px;
+          min-height: 220px;
         }
         .photo:nth-child(2),
         .photo:nth-child(3) {
@@ -518,9 +538,24 @@
           </p>
 
           <div class="photo-strip" aria-label="Ảnh nhóm mẫu">
-            <div class="photo" style="background-image: url('./images/group-1.jpg')"><span>Khoảnh khắc 01</span></div>
-            <div class="photo" style="background-image: url('./images/group-2.jpg')"><span>Khoảnh khắc 02</span></div>
-            <div class="photo" style="background-image: url('./images/group-3.jpg')"><span>Khoảnh khắc 03</span></div>
+            <div
+              class="photo"
+              style="background-image: url(&quot;./images/pic3.jpg&quot;)"
+            >
+              <span>10/10/2024</span>
+            </div>
+            <div
+              class="photo"
+              style="background-image: url(&quot;./images/pic2.jpg&quot;)"
+            >
+              <span>2026</span>
+            </div>
+            <div
+              class="photo"
+              style="background-image: url(&quot;./images/pic1.jpg&quot;)"
+            >
+              <span>???</span>
+            </div>
           </div>
 
           <div class="scroll-hint">
@@ -748,7 +783,7 @@
       document.querySelectorAll(".choice").forEach((btn) => {
         btn.addEventListener("click", () => {
           document.getElementById("thanks").textContent =
-            "Vậy hẹn gặp nhau ngày 01/09 nhé ❤️";
+            "Vậy chốt hẹn gặp lại nhau đầy đủ tại nhà Hùng ngày 01/09 nhé! ❤️";
           burstConfetti();
         });
       });
