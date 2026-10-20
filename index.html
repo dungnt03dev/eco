@@ -1691,6 +1691,7 @@
 
       function tickMusic() {
         if (!musicOn || document.hidden) return;
+        pickTrack(); // kiểm tra liên tục, không phụ thuộc sự kiện scroll (điện thoại hay bỏ sót)
         if (currentTrack !== activeTrack) {
           // bản cũ nhỏ dần, hết thì mới đổi sang bản mới
           if (currentTrack >= 0 && canFade && bgAudio.volume > 0.001) {
@@ -1708,7 +1709,6 @@
         }
       }
       setInterval(tickMusic, 50);
-      window.addEventListener("scroll", () => musicOn && pickTrack(), { passive: true });
 
       function startMusic() {
         musicOn = true;
