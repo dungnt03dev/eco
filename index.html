@@ -1521,7 +1521,10 @@
 
     <div class="footer">Gửi em • 20.10.2026 • với tất cả yêu thương ♥</div>
 
-    <audio id="bgAudio" loop preload="none"></audio>
+    <audio class="track" loop playsinline preload="auto" src="./audio/music-1.mp3"></audio>
+    <audio class="track" loop playsinline preload="auto" src="./audio/music-2.mp3"></audio>
+    <audio class="track" loop playsinline preload="auto" src="./audio/music-3.mp3"></audio>
+    <audio class="track" loop playsinline preload="auto" src="./audio/music-4.mp3"></audio>
     <button class="music-btn" id="musicBtn" aria-label="Bật/tắt nhạc" title="Bật/tắt nhạc">♪<span class="music-no" id="musicNo">1</span></button>
 
     <script>
@@ -1643,23 +1646,20 @@
 
       shufflePictures();
 
-      // ===== nhạc nền theo từng đoạn: 1 thẻ audio duy nhất, đổi bài theo vị trí cuộn =====
-      const bgAudio = document.getElementById("bgAudio");
-      const TRACKS = [
-        "./audio/music-1.mp3",
-        "./audio/music-2.mp3",
-        "./audio/music-3.mp3",
-        "./audio/music-4.mp3",
-      ];
+      // ===== nhạc nền theo từng đoạn =====
+      // Cả 4 bản được bật ngay trong lần bấm mở thư (để iPhone/Safari cho phép),
+      // nhưng chỉ bản đúng đoạn có tiếng; các bản còn lại bị tắt tiếng (muted).
+      const tracks = [...document.querySelectorAll("audio.track")];
       const TRACK_VOLUME = [0.3, 0.3, 0.3, 0.3]; // âm lượng tối đa từng bản
       // đoạn nào bắt đầu từ section nào (bản 1 là mặc định từ đầu)
       const trackStarts = [null, "story", "hscroll", "cardSection"];
       const musicBtn = document.getElementById("musicBtn");
+      const musicNo = document.getElementById("musicNo");
       let musicOn = false;
-      let activeTrack = 0; // bản cần phát theo vị trí cuộn
-      let currentTrack = -1; // bản đang nạp trong thẻ audio
+      let musicMuted = false;
+      let activeTrack = 0;
 
-      // một số trình duyệt di động không cho chỉnh volume -> đổi bài dứt khoát
+      // iPhone không cho chỉnh volume -> chuyển bản bằng muted, không có hiệu ứng mờ
       const canFade = (() => {
         const t = new Audio();
         t.volume = 0.5;
@@ -1676,57 +1676,47 @@
         activeTrack = idx;
       }
 
-      function loadTrack(i) {
-        currentTrack = i;
-        bgAudio.src = TRACKS[i];
-        if (canFade) bgAudio.volume = 0;
-        document.getElementById("musicNo").textContent = i + 1;
-        bgAudio.play().catch((error) => console.log("Không thể phát nhạc:", error));
-      }
-
-      // nếu trình duyệt chặn tự phát bài mới, lần chạm/cuộn kế tiếp sẽ phát lại
-      ["pointerdown", "touchstart", "keydown", "wheel"].forEach((ev) =>
-        window.addEventListener(ev, () => musicOn && bgAudio.paused && bgAudio.play().catch(() => {}), { passive: true }),
-      );
-
       function tickMusic() {
-        if (!musicOn || document.hidden) return;
-        pickTrack(); // kiểm tra liên tục, không phụ thuộc sự kiện scroll (điện thoại hay bỏ sót)
-        if (currentTrack !== activeTrack) {
-          // bản cũ nhỏ dần, hết thì mới đổi sang bản mới
-          if (currentTrack >= 0 && canFade && bgAudio.volume > 0.001) {
-            bgAudio.volume = Math.max(0, bgAudio.volume - 0.03);
-            return;
+        if (!musicOn) return;
+        pickTrack();
+        musicNo.textContent = activeTrack + 1 + "/4";
+        tracks.forEach((a, i) => {
+          const wantSound = i === activeTrack && !musicMuted;
+          if (canFade) {
+            const target = wantSound ? TRACK_VOLUME[i] : 0;
+            const d = target - a.volume;
+            a.volume = Math.min(1, Math.max(0, Math.abs(d) < 0.015 ? target : a.volume + Math.sign(d) * 0.015));
+            a.muted = a.volume <= 0.001;
+          } else {
+            a.muted = !wantSound;
           }
-          loadTrack(activeTrack);
-          return;
-        }
-        if (bgAudio.paused) bgAudio.play().catch(() => {});
-        if (canFade) {
-          const target = TRACK_VOLUME[currentTrack];
-          const d = target - bgAudio.volume;
-          bgAudio.volume = Math.abs(d) < 0.012 ? target : bgAudio.volume + Math.sign(d) * 0.012;
-        }
+          // nếu trình duyệt tự dừng bản nào thì bật lại
+          if (a.paused && !document.hidden) a.play().catch(() => {});
+        });
       }
       setInterval(tickMusic, 50);
 
       function startMusic() {
         musicOn = true;
         pickTrack();
-        loadTrack(activeTrack); // chạy ngay trong lúc người dùng bấm
+        tracks.forEach((a, i) => {
+          // bắt đầu ở trạng thái im lặng, bản đầu sẽ tự to dần
+          a.volume = canFade ? 0 : 1;
+          a.muted = true;
+          a.play().catch((error) => console.log("Không thể phát nhạc:", error));
+        });
         musicBtn.classList.add("show", "playing");
-        // tải sẵn các bản còn lại để chuyển bài không bị khựng
-        TRACKS.forEach((src) => fetch(src).catch(() => {}));
       }
 
       musicBtn.addEventListener("click", () => {
-        bgAudio.muted = !bgAudio.muted;
-        musicBtn.classList.toggle("off", bgAudio.muted);
-        musicBtn.classList.toggle("playing", !bgAudio.muted);
+        musicMuted = !musicMuted;
+        musicBtn.classList.toggle("off", musicMuted);
+        musicBtn.classList.toggle("playing", !musicMuted);
       });
 
       document.addEventListener("visibilitychange", () => {
-        if (document.hidden) bgAudio.pause();
+        if (!musicOn) return;
+        tracks.forEach((a) => (document.hidden ? a.pause() : a.play().catch(() => {})));
       });
 
       // ===== mở thư =====
