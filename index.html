@@ -1011,6 +1011,44 @@
         clip-path: inset(0 0 0 0);
       }
 
+      .music-btn {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 22px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--pink-300), var(--pink-600));
+        box-shadow: 0 10px 24px rgba(214, 96, 138, 0.4);
+        z-index: 70;
+        display: none;
+        place-items: center;
+      }
+      .music-btn.show {
+        display: grid;
+      }
+      .music-btn.playing {
+        animation: spinNote 3s linear infinite;
+      }
+      .music-btn.off::after {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 30px;
+        background: #fff;
+        rotate: 45deg;
+        border-radius: 2px;
+      }
+      @keyframes spinNote {
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
       /* ===== HIỆU ỨNG CUỘN ===== */
       .reveal {
         opacity: 0;
@@ -1341,40 +1379,6 @@
         <div class="marquee rev" data-clone><figure class="pic"><img src="./images/picture-8.jpg" alt="Ảnh 8" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-5.jpg" alt="Ảnh 5" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-10.jpg" alt="Ảnh 10" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-6.jpg" alt="Ảnh 6" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-9.jpg" alt="Ảnh 9" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-12.jpg" alt="Ảnh 12" onerror="this.style.display='none'" /></figure></div>
       </section>
 
-      <!-- THIỆP -->
-      <section class="card-section letter-content" id="cardSection">
-        <div class="invite reveal zoom">
-          <div class="invite-in">
-            <span class="orn tl">❀</span><span class="orn tr">❀</span>
-            <span class="orn bl">❀</span><span class="orn br">❀</span>
-            <div class="kicker reveal">Trân trọng gửi đến</div>
-            <h3 class="reveal">Cô gái của anh</h3>
-            <p class="lead reveal">
-              Nhân ngày Phụ nữ Việt Nam, anh xin gửi đến em ngàn lời chúc
-              ngọt ngào nhất cùng một trái tim chỉ dành riêng cho em.
-            </p>
-
-            <div class="arches">
-              <figure class="pic arch reveal from-left"><img src="./images/picture-23.jpg" alt="Ảnh 23" onerror="this.style.display='none'" /></figure>
-              <figure class="pic arch reveal zoom"><img src="./images/picture-24.jpg" alt="Ảnh 24" onerror="this.style.display='none'" /></figure>
-              <figure class="pic arch reveal from-right"><img src="./images/picture-25.jpg" alt="Ảnh 25" onerror="this.style.display='none'" /></figure>
-            </div>
-
-            <div class="date-row reveal">
-              <span class="d">20</span>
-              <span class="m">Tháng<b>Mười</b>2026</span>
-              <span class="d">♥</span>
-            </div>
-
-            <div class="wishes">
-              <div class="wish reveal"><span>🌸</span><h4>Luôn xinh đẹp</h4><p>Rạng rỡ như chính nụ cười của em mỗi sáng.</p></div>
-              <div class="wish reveal"><span>🌷</span><h4>Luôn bình yên</h4><p>Mọi lo toan cứ để anh cùng em gánh bớt.</p></div>
-              <div class="wish reveal"><span>💗</span><h4>Luôn hạnh phúc</h4><p>Vì hạnh phúc của em là điều anh mong nhất.</p></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- CUỘN NGANG -->
       <section class="hscroll letter-content" id="hscroll">
         <div class="hstick">
@@ -1458,6 +1462,40 @@
           </div>
       </section>
 
+      <!-- THIỆP -->
+      <section class="card-section letter-content" id="cardSection">
+        <div class="invite reveal zoom">
+          <div class="invite-in">
+            <span class="orn tl">❀</span><span class="orn tr">❀</span>
+            <span class="orn bl">❀</span><span class="orn br">❀</span>
+            <div class="kicker reveal">Trân trọng gửi đến</div>
+            <h3 class="reveal">Cô gái của anh</h3>
+            <p class="lead reveal">
+              Nhân ngày Phụ nữ Việt Nam, anh xin gửi đến em ngàn lời chúc
+              ngọt ngào nhất cùng một trái tim chỉ dành riêng cho em.
+            </p>
+
+            <div class="arches">
+              <figure class="pic arch reveal from-left"><img src="./images/picture-23.jpg" alt="Ảnh 23" onerror="this.style.display='none'" /></figure>
+              <figure class="pic arch reveal zoom"><img src="./images/picture-24.jpg" alt="Ảnh 24" onerror="this.style.display='none'" /></figure>
+              <figure class="pic arch reveal from-right"><img src="./images/picture-25.jpg" alt="Ảnh 25" onerror="this.style.display='none'" /></figure>
+            </div>
+
+            <div class="date-row reveal">
+              <span class="d">20</span>
+              <span class="m">Tháng<b>Mười</b>2026</span>
+              <span class="d">♥</span>
+            </div>
+
+            <div class="wishes">
+              <div class="wish reveal"><span>🌸</span><h4>Luôn xinh đẹp</h4><p>Rạng rỡ như chính nụ cười của em mỗi sáng.</p></div>
+              <div class="wish reveal"><span>🌷</span><h4>Luôn bình yên</h4><p>Mọi lo toan cứ để anh cùng em gánh bớt.</p></div>
+              <div class="wish reveal"><span>💗</span><h4>Luôn hạnh phúc</h4><p>Vì hạnh phúc của em là điều anh mong nhất.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- KẾT -->
       <section class="finale letter-content" id="finale">
         <div class="shell">
@@ -1470,9 +1508,11 @@
 
     <div class="footer">Gửi em • 20.10.2026 • với tất cả yêu thương ♥</div>
 
-    <audio id="backgroundMusic" loop preload="auto">
-      <source src="./audio/background.mp3" type="audio/mpeg" />
-    </audio>
+    <audio class="track" loop preload="auto" src="./audio/music-1.mp3"></audio>
+    <audio class="track" loop preload="auto" src="./audio/music-2.mp3"></audio>
+    <audio class="track" loop preload="auto" src="./audio/music-3.mp3"></audio>
+    <audio class="track" loop preload="auto" src="./audio/music-4.mp3"></audio>
+    <button class="music-btn" id="musicBtn" aria-label="Bật/tắt nhạc" title="Bật/tắt nhạc">♪</button>
 
     <script>
       // ===== hiện dần khi cuộn =====
@@ -1593,9 +1633,59 @@
 
       shufflePictures();
 
+      // ===== nhạc nền theo từng đoạn, chuyển mờ dần =====
+      const tracks = [...document.querySelectorAll("audio.track")];
+      const TRACK_VOLUME = [0.3, 0.3, 0.3, 0.3]; // âm lượng tối đa từng bản
+      // đoạn nào bắt đầu từ section nào (bản 1 là mặc định từ đầu)
+      const trackStarts = [null, "story", "hscroll", "cardSection"];
+      const musicBtn = document.getElementById("musicBtn");
+      let musicOn = false;
+      let musicMuted = false;
+      let activeTrack = 0;
+
+      function pickTrack() {
+        let idx = 0;
+        trackStarts.forEach((id, i) => {
+          if (!id) return;
+          const el = document.getElementById(id);
+          if (el.offsetHeight && el.getBoundingClientRect().top <= window.innerHeight * 0.5) idx = i;
+        });
+        activeTrack = idx;
+      }
+
+      setInterval(() => {
+        if (!musicOn) return;
+        tracks.forEach((a, i) => {
+          const target = !musicMuted && i === activeTrack ? TRACK_VOLUME[i] : 0;
+          const diff = target - a.volume;
+          a.volume = Math.min(1, Math.max(0, Math.abs(diff) < 0.012 ? target : a.volume + Math.sign(diff) * 0.012));
+        });
+      }, 50);
+      window.addEventListener("scroll", () => musicOn && pickTrack(), { passive: true });
+
+      function startMusic() {
+        musicOn = true;
+        pickTrack();
+        tracks.forEach((a) => {
+          a.volume = 0;
+          a.play().catch((error) => console.log("Không thể phát nhạc:", error));
+        });
+        musicBtn.classList.add("show", "playing");
+      }
+
+      musicBtn.addEventListener("click", () => {
+        musicMuted = !musicMuted;
+        musicBtn.classList.toggle("off", musicMuted);
+        musicBtn.classList.toggle("playing", !musicMuted);
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (!musicOn) return;
+        tracks.forEach((a) => (document.hidden ? a.pause() : a.play().catch(() => {})));
+      });
+
       // ===== mở thư =====
       const envelope = document.getElementById("envelope");
-      const music = document.getElementById("backgroundMusic");
       const openLabel = document.getElementById("openLabel");
       const paper = document.getElementById("paper");
       const letterContent = document.getElementById("letterContent");
@@ -1609,23 +1699,7 @@
         envelope.classList.add("open");
         openLabel.textContent = "Thư đã mở — kéo xuống để đọc nhé 💕";
 
-        music.volume = 0;
-        music
-          .play()
-          .then(() => {
-            let volume = 0;
-            const fadeIn = setInterval(() => {
-              volume += 0.02;
-              if (volume >= 0.25) {
-                volume = 0.25;
-                clearInterval(fadeIn);
-              }
-              music.volume = volume;
-            }, 100);
-          })
-          .catch((error) => {
-            console.log("Không thể phát nhạc:", error);
-          });
+        startMusic();
 
         setTimeout(async () => {
           await shufflePictures();
