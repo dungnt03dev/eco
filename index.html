@@ -1633,7 +1633,7 @@
 
       shufflePictures();
 
-      // ===== nhạc nền theo từng đoạn, chuyển mờ dần =====
+      // ===== nhạc nền theo từng đoạn: mỗi lúc chỉ phát 1 bản =====
       const tracks = [...document.querySelectorAll("audio.track")];
       const TRACK_VOLUME = [0.3, 0.3, 0.3, 0.3]; // âm lượng tối đa từng bản
       // đoạn nào bắt đầu từ section nào (bản 1 là mặc định từ đầu)
@@ -1642,6 +1642,13 @@
       let musicOn = false;
       let musicMuted = false;
       let activeTrack = 0;
+
+      // một số trình duyệt di động không cho chỉnh volume -> chuyển bản dứt khoát
+      const canFade = (() => {
+        const t = new Audio();
+        t.volume = 0.5;
+        return t.volume === 0.5;
+      })();
 
       function pickTrack() {
         let idx = 0;
@@ -1653,22 +1660,40 @@
         activeTrack = idx;
       }
 
-      setInterval(() => {
-        if (!musicOn) return;
+      function tickMusic() {
+        if (!musicOn || document.hidden) return;
         tracks.forEach((a, i) => {
-          const target = !musicMuted && i === activeTrack ? TRACK_VOLUME[i] : 0;
-          const diff = target - a.volume;
-          a.volume = Math.min(1, Math.max(0, Math.abs(diff) < 0.012 ? target : a.volume + Math.sign(diff) * 0.012));
+          const isActive = i === activeTrack && !musicMuted;
+          if (isActive) {
+            if (a.paused) a.play().catch(() => {});
+            if (canFade) {
+              const d = TRACK_VOLUME[i] - a.volume;
+              a.volume = Math.abs(d) < 0.012 ? TRACK_VOLUME[i] : a.volume + Math.sign(d) * 0.012;
+            }
+          } else if (!a.paused) {
+            if (!canFade) {
+              a.pause();
+            } else {
+              a.volume = Math.max(0, a.volume - 0.02);
+              if (a.volume <= 0) a.pause();
+            }
+          }
         });
-      }, 50);
+      }
+      setInterval(tickMusic, 50);
       window.addEventListener("scroll", () => musicOn && pickTrack(), { passive: true });
 
       function startMusic() {
         musicOn = true;
         pickTrack();
-        tracks.forEach((a) => {
+        tracks.forEach((a, i) => {
           a.volume = 0;
-          a.play().catch((error) => console.log("Không thể phát nhạc:", error));
+          if (i === activeTrack) {
+            a.play().catch((error) => console.log("Không thể phát nhạc:", error));
+          } else {
+            // "mở khóa" bản này trong lần bấm của người dùng rồi dừng ngay
+            a.play().then(() => a.pause()).catch(() => {});
+          }
         });
         musicBtn.classList.add("show", "playing");
       }
@@ -1680,8 +1705,7 @@
       });
 
       document.addEventListener("visibilitychange", () => {
-        if (!musicOn) return;
-        tracks.forEach((a) => (document.hidden ? a.pause() : a.play().catch(() => {})));
+        if (document.hidden) tracks.forEach((a) => a.pause());
       });
 
       // ===== mở thư =====
