@@ -1508,10 +1508,7 @@
 
     <div class="footer">Gửi em • 20.10.2026 • với tất cả yêu thương ♥</div>
 
-    <audio class="track" loop preload="auto" src="./audio/music-1.mp3"></audio>
-    <audio class="track" loop preload="auto" src="./audio/music-2.mp3"></audio>
-    <audio class="track" loop preload="auto" src="./audio/music-3.mp3"></audio>
-    <audio class="track" loop preload="auto" src="./audio/music-4.mp3"></audio>
+    <audio id="bgAudio" loop preload="none"></audio>
     <button class="music-btn" id="musicBtn" aria-label="Bật/tắt nhạc" title="Bật/tắt nhạc">♪</button>
 
     <script>
@@ -1633,17 +1630,23 @@
 
       shufflePictures();
 
-      // ===== nhạc nền theo từng đoạn: mỗi lúc chỉ phát 1 bản =====
-      const tracks = [...document.querySelectorAll("audio.track")];
+      // ===== nhạc nền theo từng đoạn: 1 thẻ audio duy nhất, đổi bài theo vị trí cuộn =====
+      const bgAudio = document.getElementById("bgAudio");
+      const TRACKS = [
+        "./audio/music-1.mp3",
+        "./audio/music-2.mp3",
+        "./audio/music-3.mp3",
+        "./audio/music-4.mp3",
+      ];
       const TRACK_VOLUME = [0.3, 0.3, 0.3, 0.3]; // âm lượng tối đa từng bản
       // đoạn nào bắt đầu từ section nào (bản 1 là mặc định từ đầu)
       const trackStarts = [null, "story", "hscroll", "cardSection"];
       const musicBtn = document.getElementById("musicBtn");
       let musicOn = false;
-      let musicMuted = false;
-      let activeTrack = 0;
+      let activeTrack = 0; // bản cần phát theo vị trí cuộn
+      let currentTrack = -1; // bản đang nạp trong thẻ audio
 
-      // một số trình duyệt di động không cho chỉnh volume -> chuyển bản dứt khoát
+      // một số trình duyệt di động không cho chỉnh volume -> đổi bài dứt khoát
       const canFade = (() => {
         const t = new Audio();
         t.volume = 0.5;
@@ -1660,25 +1663,30 @@
         activeTrack = idx;
       }
 
+      function loadTrack(i) {
+        currentTrack = i;
+        bgAudio.src = TRACKS[i];
+        if (canFade) bgAudio.volume = 0;
+        bgAudio.play().catch((error) => console.log("Không thể phát nhạc:", error));
+      }
+
       function tickMusic() {
         if (!musicOn || document.hidden) return;
-        tracks.forEach((a, i) => {
-          const isActive = i === activeTrack && !musicMuted;
-          if (isActive) {
-            if (a.paused) a.play().catch(() => {});
-            if (canFade) {
-              const d = TRACK_VOLUME[i] - a.volume;
-              a.volume = Math.abs(d) < 0.012 ? TRACK_VOLUME[i] : a.volume + Math.sign(d) * 0.012;
-            }
-          } else if (!a.paused) {
-            if (!canFade) {
-              a.pause();
-            } else {
-              a.volume = Math.max(0, a.volume - 0.02);
-              if (a.volume <= 0) a.pause();
-            }
+        if (currentTrack !== activeTrack) {
+          // bản cũ nhỏ dần, hết thì mới đổi sang bản mới
+          if (currentTrack >= 0 && canFade && bgAudio.volume > 0.001) {
+            bgAudio.volume = Math.max(0, bgAudio.volume - 0.03);
+            return;
           }
-        });
+          loadTrack(activeTrack);
+          return;
+        }
+        if (bgAudio.paused) bgAudio.play().catch(() => {});
+        if (canFade) {
+          const target = TRACK_VOLUME[currentTrack];
+          const d = target - bgAudio.volume;
+          bgAudio.volume = Math.abs(d) < 0.012 ? target : bgAudio.volume + Math.sign(d) * 0.012;
+        }
       }
       setInterval(tickMusic, 50);
       window.addEventListener("scroll", () => musicOn && pickTrack(), { passive: true });
@@ -1686,26 +1694,20 @@
       function startMusic() {
         musicOn = true;
         pickTrack();
-        tracks.forEach((a, i) => {
-          a.volume = 0;
-          if (i === activeTrack) {
-            a.play().catch((error) => console.log("Không thể phát nhạc:", error));
-          } else {
-            // "mở khóa" bản này trong lần bấm của người dùng rồi dừng ngay
-            a.play().then(() => a.pause()).catch(() => {});
-          }
-        });
+        loadTrack(activeTrack); // chạy ngay trong lúc người dùng bấm
         musicBtn.classList.add("show", "playing");
+        // tải sẵn các bản còn lại để chuyển bài không bị khựng
+        TRACKS.forEach((src) => fetch(src).catch(() => {}));
       }
 
       musicBtn.addEventListener("click", () => {
-        musicMuted = !musicMuted;
-        musicBtn.classList.toggle("off", musicMuted);
-        musicBtn.classList.toggle("playing", !musicMuted);
+        bgAudio.muted = !bgAudio.muted;
+        musicBtn.classList.toggle("off", bgAudio.muted);
+        musicBtn.classList.toggle("playing", !bgAudio.muted);
       });
 
       document.addEventListener("visibilitychange", () => {
-        if (document.hidden) tracks.forEach((a) => a.pause());
+        if (document.hidden) bgAudio.pause();
       });
 
       // ===== mở thư =====
