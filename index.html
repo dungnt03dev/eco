@@ -1057,9 +1057,44 @@
         border-radius: 2px;
       }
       @keyframes spinNote {
-        50% {
-          transform: scale(1.1);
-        }
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.1) rotate(-8deg); }
+        75% { transform: scale(1.1) rotate(8deg); }
+      }
+      .music-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid var(--pink-300);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .music-btn.playing::before {
+        animation: ring 2s ease-out infinite;
+      }
+      @keyframes ring {
+        0% { transform: scale(1); opacity: 0.9; }
+        100% { transform: scale(1.9); opacity: 0; }
+      }
+      .music-no.pop {
+        animation: popNo 0.6s cubic-bezier(0.3, 1.8, 0.5, 1);
+      }
+      @keyframes popNo {
+        0% { transform: scale(0.2) rotate(-40deg); }
+        100% { transform: scale(1) rotate(0); }
+      }
+      .note {
+        position: fixed;
+        z-index: 69;
+        pointer-events: none;
+        color: var(--pink-500);
+        animation: noteUp 2.6s ease-out forwards;
+      }
+      @keyframes noteUp {
+        0% { transform: translate(0, 0) scale(0.6) rotate(0); opacity: 0; }
+        15% { opacity: 1; }
+        100% { transform: translate(var(--dx), -150px) scale(1.3) rotate(var(--rot)); opacity: 0; }
       }
 
       /* ===== HIỆU ỨNG CUỘN ===== */
@@ -1704,7 +1739,13 @@
       function tickMusic() {
         if (!musicOn) return;
         pickTrack();
-        musicNo.textContent = activeTrack + 1 + "/4";
+        if (musicNo.textContent !== String(activeTrack + 1)) {
+          musicNo.textContent = activeTrack + 1;
+          musicNo.classList.remove("pop");
+          void musicNo.offsetWidth; // chạy lại animation
+          musicNo.classList.add("pop");
+          emitNotes(5);
+        }
         tracks.forEach((a, i) => {
           const wantSound = i === activeTrack && !musicMuted;
           if (gains.length) {
@@ -1729,6 +1770,27 @@
         });
       }
       setInterval(tickMusic, 50);
+
+      // nốt nhạc nhỏ bay lên từ nút ♪
+      function emitNotes(n = 1) {
+        if (reduceMotion || musicMuted || !musicBtn.classList.contains("show")) return;
+        const r = musicBtn.getBoundingClientRect();
+        const icons = ["♪", "♫", "♥", "♬"];
+        for (let k = 0; k < n; k++) {
+          const el = document.createElement("span");
+          el.className = "note";
+          el.textContent = icons[Math.floor(Math.random() * icons.length)];
+          el.style.left = r.left + r.width / 2 - 6 + "px";
+          el.style.top = r.top + "px";
+          el.style.fontSize = 14 + Math.random() * 10 + "px";
+          el.style.setProperty("--dx", Math.random() * 70 - 55 + "px");
+          el.style.setProperty("--rot", Math.random() * 60 - 30 + "deg");
+          el.style.animationDelay = k * 0.12 + "s";
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 3200);
+        }
+      }
+      setInterval(() => musicOn && emitNotes(1), 1800);
 
       function startMusic() {
         musicOn = true;
