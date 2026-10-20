@@ -823,6 +823,194 @@
         margin-top: 14px;
       }
 
+
+      /* ===== CUỘN NGANG ===== */
+      .hscroll {
+        position: relative;
+        z-index: 1;
+        height: 300vh;
+      }
+      .hstick {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 28px;
+      }
+      .hhead {
+        text-align: center;
+        padding: 0 16px;
+      }
+      .hhead h3 {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(40px, 7vw, 68px);
+        margin: 0;
+        color: var(--pink-600);
+      }
+      .hhead p {
+        margin: 4px 0 0;
+        color: #8a6272;
+        font-size: 14px;
+      }
+      .htrack {
+        display: flex;
+        gap: 26px;
+        width: max-content;
+        padding: 0 8vw;
+        will-change: transform;
+      }
+      .htrack .pic {
+        flex: none;
+        width: clamp(230px, 36vw, 440px);
+        height: clamp(300px, 56vh, 520px);
+        border-radius: 26px;
+      }
+      .htrack .pic:nth-child(even) {
+        margin-top: 40px;
+      }
+      .htrack .pic:nth-child(odd) {
+        margin-top: -10px;
+      }
+      .hbar {
+        width: min(320px, 70%);
+        height: 3px;
+        margin: 0 auto;
+        border-radius: 3px;
+        background: rgba(232, 122, 159, 0.22);
+        overflow: hidden;
+      }
+      .hbar i {
+        display: block;
+        height: 100%;
+        width: 100%;
+        transform-origin: left;
+        transform: scaleX(0);
+        background: var(--pink-500);
+      }
+
+      /* ===== SCRAPBOOK ===== */
+      .scrap {
+        position: relative;
+        z-index: 1;
+        padding: 100px 0 40px;
+      }
+      .scrap-title {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .scrap-title h3 {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(40px, 7vw, 68px);
+        margin: 0;
+        color: var(--pink-600);
+      }
+      .scrap-title p {
+        margin: 4px 0 0;
+        color: #8a6272;
+      }
+      .scrap-board {
+        position: relative;
+        width: min(1100px, calc(100% - 32px));
+        height: 980px;
+        margin: 0 auto;
+      }
+      .scrap-board .big {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: clamp(34px, 7vw, 84px);
+        line-height: 1.15;
+        text-align: center;
+        color: rgba(232, 122, 159, 0.28);
+        pointer-events: none;
+      }
+      .scrap-item {
+        position: absolute;
+        left: var(--l);
+        top: var(--t);
+        width: var(--w, 24%);
+        will-change: transform;
+      }
+      .scrap-item .pic {
+        aspect-ratio: 3 / 4;
+        border-width: 7px 7px 30px;
+        border-radius: 6px;
+        rotate: var(--r, 0deg);
+      }
+      .scrap-item .tape {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        width: 70px;
+        height: 22px;
+        translate: -50% 0;
+        background: rgba(251, 201, 216, 0.85);
+        z-index: 3;
+        rotate: -4deg;
+        box-shadow: 0 2px 6px rgba(214, 96, 138, 0.2);
+      }
+
+      /* ===== HÀNG ẢNH + LỜI ===== */
+      .rows {
+        position: relative;
+        z-index: 1;
+        padding: 60px 0 40px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(24px, 6vw, 80px);
+        align-items: center;
+        margin: 0 auto 90px;
+        width: min(1000px, calc(100% - 32px));
+      }
+      .row:nth-child(even) .row-pic {
+        order: 2;
+      }
+      .row-pic {
+        aspect-ratio: 4 / 5;
+        border-radius: 200px 200px 24px 24px;
+      }
+      .row:nth-child(even) .row-pic {
+        border-radius: 24px 24px 200px 200px;
+      }
+      .row-text .no {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(64px, 11vw, 130px);
+        line-height: 1;
+        color: rgba(232, 122, 159, 0.3);
+      }
+      .row-text h4 {
+        font-family: "Dancing Script", cursive;
+        font-size: clamp(36px, 5.5vw, 58px);
+        margin: -6px 0 10px;
+        color: var(--pink-600);
+      }
+      .row-text p {
+        margin: 0;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: clamp(16px, 2.2vw, 21px);
+        line-height: 1.8;
+        color: var(--ink);
+      }
+      .wipe {
+        clip-path: inset(0 100% 0 0);
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s ease,
+          clip-path 1.3s cubic-bezier(0.7, 0, 0.2, 1);
+      }
+      .wipe.show {
+        clip-path: inset(0 0 0 0);
+      }
+
       /* ===== HIỆU ỨNG CUỘN ===== */
       .reveal {
         opacity: 0;
@@ -908,6 +1096,27 @@
         }
         .story-dots {
           right: 10px;
+        }
+        .scrap-board {
+          height: 1250px;
+        }
+        .scrap-item {
+          left: var(--ml, var(--l));
+          top: var(--mt, var(--t));
+          width: var(--mw, 44%);
+        }
+        .row {
+          grid-template-columns: 1fr;
+          text-align: center;
+          margin-bottom: 70px;
+        }
+        .row:nth-child(even) .row-pic {
+          order: 0;
+        }
+        .row-pic {
+          max-width: 340px;
+          width: 100%;
+          margin: 0 auto;
         }
       }
 
@@ -1166,6 +1375,89 @@
         </div>
       </section>
 
+      <!-- CUỘN NGANG -->
+      <section class="hscroll letter-content" id="hscroll">
+        <div class="hstick">
+          <div class="hhead">
+            <h3>Cùng nhau đi qua</h3>
+            <p>Lướt xuống, ảnh sẽ trôi ngang</p>
+          </div>
+          <div class="htrack" id="htrack"><figure class="pic"><img src="./images/picture-1.jpg" alt="Ảnh 1" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-2.jpg" alt="Ảnh 2" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-3.jpg" alt="Ảnh 3" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-4.jpg" alt="Ảnh 4" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-5.jpg" alt="Ảnh 5" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-6.jpg" alt="Ảnh 6" onerror="this.style.display='none'" /></figure><figure class="pic"><img src="./images/picture-7.jpg" alt="Ảnh 7" onerror="this.style.display='none'" /></figure></div>
+          <div class="hbar"><i id="hbar"></i></div>
+        </div>
+      </section>
+
+      <!-- SCRAPBOOK -->
+      <section class="scrap letter-content" id="scrap">
+        <div class="scrap-title reveal">
+          <h3>Cuốn sổ kỷ niệm</h3>
+          <p>Mỗi tấm ảnh một câu chuyện nhỏ.</p>
+        </div>
+        <div class="scrap-board">
+          <div class="big">Yêu em<br />mỗi ngày</div>
+            <div class="scrap-item" data-speed="0.06" style="--l:3%;--t:2%;--w:24%;--r:-5deg;--ml:3%;--mt:1%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-29.jpg" alt="Ảnh 29" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="-0.05" style="--l:36%;--t:0%;--w:26%;--r:3deg;--ml:50%;--mt:8%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-30.jpg" alt="Ảnh 30" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="0.08" style="--l:72%;--t:5%;--w:24%;--r:-3deg;--ml:3%;--mt:24%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-31.jpg" alt="Ảnh 31" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="-0.07" style="--l:10%;--t:34%;--w:24%;--r:4deg;--ml:50%;--mt:34%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-32.jpg" alt="Ảnh 32" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="0.05" style="--l:50%;--t:30%;--w:26%;--r:-4deg;--ml:3%;--mt:50%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-33.jpg" alt="Ảnh 33" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="-0.06" style="--l:76%;--t:42%;--w:22%;--r:5deg;--ml:50%;--mt:58%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-34.jpg" alt="Ảnh 34" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="0.07" style="--l:22%;--t:66%;--w:25%;--r:-3deg;--ml:3%;--mt:74%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-35.jpg" alt="Ảnh 35" onerror="this.style.display='none'" /></figure>
+            </div>
+            <div class="scrap-item" data-speed="-0.04" style="--l:58%;--t:68%;--w:26%;--r:3deg;--ml:50%;--mt:82%">
+              <span class="tape"></span>
+              <figure class="pic reveal zoom"><img src="./images/picture-36.jpg" alt="Ảnh 36" onerror="this.style.display='none'" /></figure>
+            </div>
+        </div>
+      </section>
+
+      <!-- ẢNH + LỜI -->
+      <section class="rows letter-content" id="rows">
+          <div class="row">
+            <figure class="pic row-pic reveal wipe"><img src="./images/picture-2.jpg" alt="Ảnh 2" onerror="this.style.display='none'" /></figure>
+            <div class="row-text reveal">
+              <div class="no">01</div>
+              <h4>Em là bình yên</h4>
+              <p>Sau những ngày dài, chỉ cần nghĩ đến em là mọi bộn bề đều lặng xuống.</p>
+            </div>
+          </div>
+          <div class="row">
+            <figure class="pic row-pic reveal wipe"><img src="./images/picture-3.jpg" alt="Ảnh 3" onerror="this.style.display='none'" /></figure>
+            <div class="row-text reveal">
+              <div class="no">02</div>
+              <h4>Em là điều anh mong</h4>
+              <p>Mọi điều tốt đẹp anh ước, hóa ra đều có hình dáng của em.</p>
+            </div>
+          </div>
+          <div class="row">
+            <figure class="pic row-pic reveal wipe"><img src="./images/picture-4.jpg" alt="Ảnh 4" onerror="this.style.display='none'" /></figure>
+            <div class="row-text reveal">
+              <div class="no">03</div>
+              <h4>Em là nhà</h4>
+              <p>Đi đâu, làm gì, cuối cùng anh cũng chỉ muốn quay về bên em.</p>
+            </div>
+          </div>
+      </section>
+
       <!-- KẾT -->
       <section class="finale letter-content" id="finale">
         <div class="shell">
@@ -1299,6 +1591,8 @@
           .style.setProperty("--ghost-img", `url("${picSrc(shuffle(pool)[0])}")`);
       }
 
+      shufflePictures();
+
       // ===== mở thư =====
       const envelope = document.getElementById("envelope");
       const music = document.getElementById("backgroundMusic");
@@ -1348,6 +1642,7 @@
             onScroll();
             updateStory();
             updateGhost();
+            updateExtras();
           });
 
           paper.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1421,6 +1716,32 @@
         const r = ghost.getBoundingClientRect();
         ghost.style.setProperty("--py", (r.top - window.innerHeight / 2) * -0.12 + "px");
       }
+
+      // ===== cuộn ngang + scrapbook =====
+      const hs = document.getElementById("hscroll");
+      const htrack = document.getElementById("htrack");
+      const hbar = document.getElementById("hbar");
+      const scrapItemsEl = [...document.querySelectorAll(".scrap-item")];
+      function updateExtras() {
+        if (hs.offsetHeight) {
+          const shift = Math.max(0, htrack.scrollWidth - window.innerWidth);
+          const h = shift + window.innerHeight;
+          if (Math.abs(hs.offsetHeight - h) > 2) hs.style.height = h + "px";
+          const r = hs.getBoundingClientRect();
+          const p = Math.min(1, Math.max(0, -r.top / (h - window.innerHeight || 1)));
+          htrack.style.transform = `translateX(${-p * shift}px)`;
+          hbar.style.transform = `scaleX(${p})`;
+        }
+        if (!reduceMotion) {
+          scrapItemsEl.forEach((el) => {
+            const r = el.getBoundingClientRect();
+            const off = r.top + r.height / 2 - window.innerHeight / 2;
+            el.style.transform = `translateY(${off * parseFloat(el.dataset.speed)}px)`;
+          });
+        }
+      }
+      window.addEventListener("scroll", updateExtras, { passive: true });
+      window.addEventListener("resize", updateExtras);
       window.addEventListener("scroll", () => { updateStory(); updateGhost(); }, { passive: true });
       window.addEventListener("resize", () => { updateStory(); updateGhost(); });
 
