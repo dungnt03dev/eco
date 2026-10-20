@@ -1028,6 +1028,19 @@
         display: none;
         place-items: center;
       }
+      .music-no {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 4px;
+        border-radius: 9px;
+        background: #fff;
+        color: var(--pink-600);
+        font: 700 11px/18px "Be Vietnam Pro", sans-serif;
+        text-align: center;
+      }
       .music-btn.show {
         display: grid;
       }
@@ -1509,7 +1522,7 @@
     <div class="footer">Gửi em • 20.10.2026 • với tất cả yêu thương ♥</div>
 
     <audio id="bgAudio" loop preload="none"></audio>
-    <button class="music-btn" id="musicBtn" aria-label="Bật/tắt nhạc" title="Bật/tắt nhạc">♪</button>
+    <button class="music-btn" id="musicBtn" aria-label="Bật/tắt nhạc" title="Bật/tắt nhạc">♪<span class="music-no" id="musicNo">1</span></button>
 
     <script>
       // ===== hiện dần khi cuộn =====
@@ -1667,8 +1680,14 @@
         currentTrack = i;
         bgAudio.src = TRACKS[i];
         if (canFade) bgAudio.volume = 0;
+        document.getElementById("musicNo").textContent = i + 1;
         bgAudio.play().catch((error) => console.log("Không thể phát nhạc:", error));
       }
+
+      // nếu trình duyệt chặn tự phát bài mới, lần chạm/cuộn kế tiếp sẽ phát lại
+      ["pointerdown", "touchstart", "keydown", "wheel"].forEach((ev) =>
+        window.addEventListener(ev, () => musicOn && bgAudio.paused && bgAudio.play().catch(() => {}), { passive: true }),
+      );
 
       function tickMusic() {
         if (!musicOn || document.hidden) return;
